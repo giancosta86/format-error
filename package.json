@@ -1,0 +1,60 @@
+{
+  "name": "@giancosta86/format-error",
+  "version": "1.0.0",
+  "description": "Lightweight library for modern Error formatting",
+  "keywords": [
+    "format",
+    "errors",
+    "convert",
+    "string",
+    "ES2022",
+    "cause"
+  ],
+  "homepage": "https://github.com/giancosta86/format-error#readme",
+  "bugs": "https://github.com/giancosta86/format-error/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Gianluca Costa",
+    "email": "gianluca@gianlucacosta.info",
+    "url": "https://gianlucacosta.info/"
+  },
+  "files": [],
+  "main": "dist",
+  "types": "dist",
+  "repository": "giancosta86/format-error",
+  "scripts": {
+    "clean": "rimraf dist coverage giancosta86-*.tgz",
+    "clean:all": "yarn clean && rimraf node_modules",
+    "format": "prettier --write .",
+    "prepack": "yarn check-all && yarn build && yarn test:prod",
+    "check-all": "yarn check-format && yarn lint && yarn test",
+    "check-format": "prettier --check .",
+    "lint": "eslint . --ext .js,.ts,.jsx,.tsx,.cjs,.mjs",
+    "test": "jest",
+    "test:watch": "yarn test --watch",
+    "test:coverage": "yarn test --coverage",
+    "build": "yarn compile-ts",
+    "compile-ts": "tsc",
+    "watch": "yarn compile-ts --watch",
+    "test:prod": "jest dist --testPathIgnorePatterns=[]"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@swc/core": "^1.2.218",
+    "@swc/jest": "^0.2.22",
+    "@types/jest": "^28.1.4",
+    "@typescript-eslint/eslint-plugin": "^5.30.3",
+    "@typescript-eslint/parser": "^5.30.3",
+    "eslint": "^8.18.0",
+    "jest": "^28.1.3",
+    "prettier": "^2.7.1",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.7.4"
+  },
+  "engines": {
+    "node": ">=16.16.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
