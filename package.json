@@ -1,13 +1,13 @@
 {
   "name": "@giancosta86/format-error",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Lightweight library for modern Error formatting",
   "keywords": [
     "format",
     "errors",
     "convert",
+    "Error",
     "string",
-    "ES2022",
     "cause"
   ],
   "homepage": "https://github.com/giancosta86/format-error#readme",
