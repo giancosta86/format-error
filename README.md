@@ -28,22 +28,39 @@ or
 yarn add @giancosta86/format-error
 ```
 
+The public API entirely resides in the root package index, so you shouldn't reference specific modules.
+
 ## Usage
 
-Just call the `formatError(error[,options])` function, which converts the error to a string.
+The library provides the following utility functions:
 
-The **error** argument can be anything - although non-`Error` objects will be converted without considering the **options** argument.
+- `formatError(error[,parts])`: given an error value, returns a string including just the requested error parts (see below). By default, only the **class** and the **message** are included.
 
-### Options
+  > The **error** argument can be anything - although non-`Error` objects will be converted without considering the **parts** argument.
 
-The _default options_ are always the starting point - but you can _override_ specific items by passing your _custom options_ object, with the following fields:
+- `toError(error)`: when receiving an `Error`, the function just returns the argument itself; otherwise, it creates an error whose message is the _stringified_ value
 
-- **showClass**: if `true`, includes the error's class. **Default**: `true`
+### Error parts
 
-- **showMessage**: if `true`, includes the error's message. **Default**: `true`
+`ErrorParts` is a _flag enum_ - describing the different parts of an `Error` that should appear in the result:
 
-- **showCauseChain**: if `true`, recursively includes the chain of `cause` errors, formatted according to **showClass** and **showMessage**. **Default**: `false`
+- `Class`: the class
 
-- **showStackTrace**: when `true`, the stack trace, if present, will be included. **Default**: `false`
+- `Message`: the message
 
-**Please, note**: you can't have both **showClass** and **showMessage** set to `false` - in such a case, the function will throw an error
+* `CauseChain`: the chain of `cause` errors - if available - displaying the related **class** and **message** parts according to the current format
+
+* `Stack`: the stack trace
+
+You can request multiple error parts by combining the enum values - for example:
+
+```typescript
+formatError(
+  new URIError("Yogi the Bear"),
+  ErrorParts.Class | ErrorParts.CauseChain
+);
+```
+
+Additionally, the shortcut combination values `Core`, `Main` and `All` are available.
+
+**Please, note**: you must specify **at least one** between `Class` and `Message`; otherwise, the function will throw an error

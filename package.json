@@ -1,6 +1,6 @@
 {
   "name": "@giancosta86/format-error",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "Lightweight library for modern Error formatting",
   "keywords": [
     "format",

@@ -1,6 +1,6 @@
-import { formatError } from ".";
+import { ErrorParts, formatError } from "./formatError";
 
-const TEST_FILE_REGEX = /index\.(test)\.(j|t)s/;
+const TEST_FILE_REGEX = /formatError\.(test)\.(j|t)s/;
 
 describe("Formatting an error", () => {
   describe("when passing a non-Error value", () => {
@@ -36,12 +36,10 @@ describe("Formatting an error", () => {
   describe("when requesting no core info component", () => {
     it("should throw", () => {
       expect(() => {
-        formatError(new URIError("Yogi the Bear"), {
-          showClass: false,
-          showMessage: false,
-          showCauseChain: true,
-          showStackTrace: true
-        });
+        formatError(
+          new URIError("Yogi the Bear"),
+          ErrorParts.CauseChain | ErrorParts.Stack
+        );
       }).toThrow(/^Cannot format/);
     });
   });
@@ -49,12 +47,10 @@ describe("Formatting an error", () => {
   describe("when requesting the core info", () => {
     describe("when requesting just the class", () => {
       it("should return just the class", () => {
-        const output = formatError(new URIError("Yogi the Bear"), {
-          showClass: true,
-          showMessage: false,
-          showCauseChain: false,
-          showStackTrace: false
-        });
+        const output = formatError(
+          new URIError("Yogi the Bear"),
+          ErrorParts.Class
+        );
 
         expect(output).toBe("URIError");
       });
@@ -63,12 +59,10 @@ describe("Formatting an error", () => {
     describe("when requesting just the message", () => {
       describe("when the message is present", () => {
         it("should return just the message", () => {
-          const output = formatError(new URIError("Yogi the Bear"), {
-            showClass: false,
-            showMessage: true,
-            showCauseChain: false,
-            showStackTrace: false
-          });
+          const output = formatError(
+            new URIError("Yogi the Bear"),
+            ErrorParts.Message
+          );
 
           expect(output).toBe("Yogi the Bear");
         });
@@ -76,12 +70,7 @@ describe("Formatting an error", () => {
 
       describe("when the message is missing", () => {
         it("should return the empty string", () => {
-          const output = formatError(new URIError(), {
-            showClass: false,
-            showMessage: true,
-            showCauseChain: false,
-            showStackTrace: false
-          });
+          const output = formatError(new URIError(), ErrorParts.Message);
 
           expect(output).toBe("");
         });
@@ -91,12 +80,10 @@ describe("Formatting an error", () => {
     describe("when requesting both the class and the message", () => {
       describe("when the message is present", () => {
         it("should return both the class and the message", () => {
-          const output = formatError(new URIError("Yogi the Bear"), {
-            showClass: true,
-            showMessage: true,
-            showCauseChain: false,
-            showStackTrace: false
-          });
+          const output = formatError(
+            new URIError("Yogi the Bear"),
+            ErrorParts.Core
+          );
 
           expect(output).toBe('URIError("Yogi the Bear")');
         });
@@ -104,12 +91,7 @@ describe("Formatting an error", () => {
 
       describe("when the message is missing", () => {
         it("should return the class with empty parentheses", () => {
-          const output = formatError(new URIError(), {
-            showClass: true,
-            showMessage: true,
-            showCauseChain: false,
-            showStackTrace: false
-          });
+          const output = formatError(new URIError(), ErrorParts.Core);
 
           expect(output).toBe("URIError()");
         });
@@ -125,12 +107,10 @@ describe("Formatting an error", () => {
             cause: new RangeError("Ciop the Chipmunk")
           });
 
-          const output = formatError(error, {
-            showClass: true,
-            showMessage: false,
-            showCauseChain: true,
-            showStackTrace: false
-          });
+          const output = formatError(
+            error,
+            ErrorParts.Class | ErrorParts.CauseChain
+          );
 
           expect(output).toBe("URIError. Cause: RangeError");
         });
@@ -142,12 +122,10 @@ describe("Formatting an error", () => {
             cause: new RangeError("Ciop the Chipmunk")
           });
 
-          const output = formatError(error, {
-            showClass: false,
-            showMessage: true,
-            showCauseChain: true,
-            showStackTrace: false
-          });
+          const output = formatError(
+            error,
+            ErrorParts.Message | ErrorParts.CauseChain
+          );
 
           expect(output).toBe("Yogi the Bear. Cause: Ciop the Chipmunk");
         });
@@ -159,12 +137,7 @@ describe("Formatting an error", () => {
             cause: new RangeError("Ciop the Chipmunk")
           });
 
-          const output = formatError(error, {
-            showClass: true,
-            showMessage: true,
-            showCauseChain: true,
-            showStackTrace: false
-          });
+          const output = formatError(error, ErrorParts.Main);
 
           expect(output).toBe(
             'URIError("Yogi the Bear"). Cause: RangeError("Ciop the Chipmunk")'
@@ -180,12 +153,10 @@ describe("Formatting an error", () => {
             cause: new Error("Beta", { cause: new RangeError("Gamma") })
           });
 
-          const output = formatError(error, {
-            showClass: true,
-            showMessage: false,
-            showCauseChain: true,
-            showStackTrace: false
-          });
+          const output = formatError(
+            error,
+            ErrorParts.Class | ErrorParts.CauseChain
+          );
 
           expect(output).toBe("URIError. Cause: Error. Cause: RangeError");
         });
@@ -197,12 +168,10 @@ describe("Formatting an error", () => {
             cause: new Error("Beta", { cause: new RangeError("Gamma") })
           });
 
-          const output = formatError(error, {
-            showClass: false,
-            showMessage: true,
-            showCauseChain: true,
-            showStackTrace: false
-          });
+          const output = formatError(
+            error,
+            ErrorParts.Message | ErrorParts.CauseChain
+          );
 
           expect(output).toBe("Alpha. Cause: Beta. Cause: Gamma");
         });
@@ -214,12 +183,7 @@ describe("Formatting an error", () => {
             cause: new Error("Beta", { cause: new RangeError("Gamma") })
           });
 
-          const output = formatError(error, {
-            showClass: true,
-            showMessage: true,
-            showCauseChain: true,
-            showStackTrace: false
-          });
+          const output = formatError(error, ErrorParts.Main);
 
           expect(output).toBe(
             'URIError("Alpha"). Cause: Error("Beta"). Cause: RangeError("Gamma")'
@@ -234,12 +198,7 @@ describe("Formatting an error", () => {
       it("should return the core info and the stack trace", () => {
         const output = formatError(
           new Error("Cip", { cause: new Error("Ciop") }),
-          {
-            showClass: true,
-            showMessage: true,
-            showCauseChain: false,
-            showStackTrace: true
-          }
+          ErrorParts.Core | ErrorParts.Stack
         );
 
         expect(output).toMatch(/^Error\("Cip"\)/);
@@ -253,12 +212,10 @@ describe("Formatting an error", () => {
         const testError = new Error("Dodo");
         testError.stack = undefined;
 
-        const output = formatError(testError, {
-          showClass: true,
-          showMessage: true,
-          showCauseChain: false,
-          showStackTrace: true
-        });
+        const output = formatError(
+          testError,
+          ErrorParts.Core | ErrorParts.Stack
+        );
 
         expect(output).toBe('Error("Dodo")');
       });
@@ -268,12 +225,7 @@ describe("Formatting an error", () => {
       it("should contain every detail", () => {
         const output = formatError(
           new RangeError("Cip", { cause: new URIError("Ciop") }),
-          {
-            showClass: true,
-            showMessage: true,
-            showCauseChain: true,
-            showStackTrace: true
-          }
+          ErrorParts.All
         );
 
         expect(output).toMatch(
