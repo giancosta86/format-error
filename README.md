@@ -12,7 +12,7 @@ _Lightweight library for modern Error formatting_
 
 - support for the `cause` property introduced by **ES 2022**
 
-- customizable behaviour via an additional **options** parameter
+- customizable behaviour via an optional `parts` parameter
 
 - backward compatibility with non-Error objects
 
@@ -36,7 +36,11 @@ The library provides the following utility functions:
 
 - `formatError(error[,parts])`: given an error value, returns a string including just the requested error parts (see below). By default, only the **class** and the **message** are included.
 
-  > The **error** argument can be anything - although non-`Error` objects will be converted without considering the **parts** argument.
+  The `error` argument can be anything - although non-`Error` objects will be converted without considering the `parts` argument. More precisely:
+
+  - If the object includes a `message` property, its string conversion will be returned
+
+  - Otherwise, the value itself is converted to string
 
 - `toError(error)`: when receiving an `Error`, the function just returns the argument itself; otherwise, it creates an error whose message is the _stringified_ value
 

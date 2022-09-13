@@ -15,7 +15,9 @@ export function formatError(
   parts: ErrorParts = ErrorParts.Core
 ): string {
   if (!(error instanceof Error)) {
-    return String(error);
+    return error instanceof Object && "message" in error
+      ? String(error["message"])
+      : String(error);
   }
 
   const resultBuffer: string[] = [];

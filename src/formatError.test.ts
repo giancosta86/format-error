@@ -21,6 +21,38 @@ describe("Formatting an error", () => {
 
       expect(output).toBe("true");
     });
+
+    it("should format null", () => {
+      const output = formatError(null);
+
+      expect(output).toBe("null");
+    });
+
+    it("should format undefined", () => {
+      const output = formatError(undefined);
+
+      expect(output).toBe("undefined");
+    });
+
+    it("should format an object having a 'message' field of type string", () => {
+      const fakeError = {
+        message: "This is my message"
+      };
+
+      const output = formatError(fakeError);
+
+      expect(output).toBe(fakeError.message);
+    });
+
+    it("should format an object having a 'message' field of type number", () => {
+      const fakeError = {
+        message: 90
+      };
+
+      const output = formatError(fakeError);
+
+      expect(output).toBe("90");
+    });
   });
 
   describe("by default", () => {
